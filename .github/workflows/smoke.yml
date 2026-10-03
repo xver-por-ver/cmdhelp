@@ -1,0 +1,38 @@
+name: Smoke test
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check shell syntax
+        run: |
+          bash -n cmdhelp.sh tests/smoke.sh
+          zsh -n cmdhelp.sh
+
+      - name: Check shell dependencies
+        run: |
+          command -v bash
+          command -v zsh
+          command -v fzf
+          command -v flock
+          command -v base64
+
+      - name: Run ShellCheck
+        run: shellcheck --severity=error cmdhelp.sh tests/*.sh
+
+      - name: Run smoke test
+        run: bash tests/smoke.sh
+
+      - name: Run standalone install test
+        run: bash tests/standalone.sh
+
+      - name: Run permission and concurrency test
+        run: bash tests/concurrency.sh

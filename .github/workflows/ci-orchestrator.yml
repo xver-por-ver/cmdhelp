@@ -1,0 +1,22 @@
+name: CI Orchestrator
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - LICENSE
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - LICENSE
+
+permissions:
+  contents: read
+
+jobs:
+
+  application-checks:
+    name: Application Quality Assurance
+    uses: ./.github/workflows/smoke.yml
