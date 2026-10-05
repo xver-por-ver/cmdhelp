@@ -12,10 +12,15 @@ mkdir -p -- "$install_dir"
 cp -- "$script_dir/cmdhelp.sh" "$install_dir/cmdhelp"
 chmod +x -- "$install_dir/cmdhelp"
 
-help_output=$("$install_dir/cmdhelp" --help)
+help_output=$(CMDHELP_DATA_FILE="$data_file" "$install_dir/cmdhelp" --help)
 grep -Fq 'cmdhelp --help' <<<"$help_output"
 
-CMDHELP_DATA_FILE="$data_file" "$install_dir/cmdhelp" list-commands >/dev/null
+if env -u CMDHELP_INTERNAL CMDHELP_DATA_FILE="$data_file" "$install_dir/cmdhelp" list-commands >/dev/null 2>&1; then
+  printf 'direct internal command invocation was accepted\n' >&2
+  exit 1
+fi
+
+CMDHELP_INTERNAL=1 CMDHELP_DATA_FILE="$data_file" "$install_dir/cmdhelp" list-commands >/dev/null
 [[ -s "$data_file" ]]
 
 printf 'cmdhelp standalone test passed\n'
