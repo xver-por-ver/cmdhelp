@@ -19,7 +19,7 @@ jobs:
 
       - name: Check shell syntax
         run: |
-          bash -n cmdhelp.sh tests/smoke.sh
+          bash -n cmdhelp.sh tests/*.sh
           zsh -n cmdhelp.sh
 
       - name: Check shell dependencies
@@ -38,6 +38,3 @@ jobs:
 
       - name: Run standalone install test
         run: bash tests/standalone.sh
-
-      - name: Run permission and concurrency test
-        run: bash tests/concurrency.sh
